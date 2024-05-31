@@ -42,7 +42,7 @@ body {
 #inputPoke {
     padding: 10px 15px;
     background-color: rgb(202, 224, 238);
-    border: 1px solid black;
+    border: 2px solid black;
     border-radius: 25px;
     font-size: 18px;
     text-align: left;
@@ -54,12 +54,17 @@ body {
 #btnValiderPoke {
     position: absolute;
     right: 20px;
-    padding: 12px 20px;
+    padding: 13px 20px;
     border: 1px solid black;
     border-radius: 0 25px 25px 0;
     font-size: 14px;
     font-weight: 600;
     background-color: black;
     color: white;
+    cursor: pointer;
+    transition: 300ms;
 }
 
+#btnValiderPoke:hover {
+    background-color: rgb(39, 39, 39);
+}
