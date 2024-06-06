@@ -62,7 +62,7 @@ body {
     background-color: black;
     color: white;
     cursor: pointer;
-    transition: 300ms;
+    transition: 350ms;
 }
 
 #btnValiderPoke:hover {
