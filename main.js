@@ -88,18 +88,27 @@ async function showPokemon() {
     prop.innerHTML = `<img src="${randomPokeImg}" alt="Image du Pokémon">`;
 }
 
-function quizz() { 
+function removeAccents(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function quizz() {
     let message = document.querySelector("#reponse");
     const inputPokemon = document.getElementById("inputPoke");
-    if (inputPokemon.value.toLowerCase() === currentPokemon.name.fr.toLowerCase()) {
+
+    // Normaliser les deux chaînes (input et nom du Pokémon) en supprimant les accents et en mettant tout en minuscule
+    const userAnswer = removeAccents(inputPokemon.value.toLowerCase());
+    const correctAnswer = removeAccents(currentPokemon.name.fr.toLowerCase());
+
+    if (userAnswer === correctAnswer) {
         message.innerHTML = `<p>Bravo, il s'agissait bien de ${currentPokemon.name.fr} !</p>`;
-        counter++
-        points++
+        counter++;
+        points++;
     } else {
         message.innerHTML = `<p>Non, la bonne réponse était ${currentPokemon.name.fr}.</p>`;
-        counter++
+        counter++;
     }
-    inputPokemon.value = ""; 
+    inputPokemon.value = "";
     updateScore();
 }
 
