@@ -8,6 +8,11 @@ body {
     font-family: "Montserrat", sans-serif;
 }
 
+button {
+    border: none;
+    cursor: pointer;
+}
+
 .quizz {
     display: flex;
     flex-direction: column;
@@ -19,6 +24,29 @@ body {
 .quizz h1 {
     font-family: "Silkscreen", sans-serif;
     font-size: 40px;
+}
+
+.generations {
+    margin-bottom: 10px;
+    cursor: default;
+}
+
+.btnSelectGen {
+    background-color: black;
+    color: white;
+    border-radius: 20px;
+    padding: 5px 10px;
+    min-width: 30px;
+    min-height: 30px;
+    margin-right: 10px;
+}
+
+.btnSelectGen:hover {
+    background-color: rgb(66, 66, 66);
+}
+
+.selected {
+    background-color: rgb(211, 65, 89);
 }
 
 .question__title {
@@ -67,4 +95,8 @@ body {
 
 #btnValiderPoke:hover {
     background-color: rgb(39, 39, 39);
+}
+
+#proposition img {
+    height: 400px;
 }

@@ -2,46 +2,60 @@ let currentPokemon = null
 let selectedGenerations = []
 
 // Fonction pour gérer la sélection de génération
-function toggleGeneration(generation) {
+function toggleGeneration(generation, buttonElement) {
     const index = selectedGenerations.indexOf(generation);
     if (index === -1) {
-        selectedGenerations.push(generation); // Ajouter si non sélectionné
+        selectedGenerations.push(generation); 
+        buttonElement.classList.add("selected"); 
     } else {
-        selectedGenerations.splice(index, 1); // Retirer si déjà sélectionné
+        selectedGenerations.splice(index, 1); 
+        buttonElement.classList.remove("selected"); 
     }
+    // Désélectionner le bouton "All" si des boutons individuels sont sélectionnés
+    if (selectedGenerations.length > 0) {
+        document.getElementById("all").classList.remove("selected");
+    }
+    showPokemon();
 }
 
-// Ajouter des événements pour chaque bouton de génération
-document.getElementById("gen1").addEventListener("click", () => toggleGeneration(1));
-document.getElementById("gen2").addEventListener("click", () => toggleGeneration(2));
-document.getElementById("gen3").addEventListener("click", () => toggleGeneration(3));
-document.getElementById("gen4").addEventListener("click", () => toggleGeneration(4));
-document.getElementById("gen5").addEventListener("click", () => toggleGeneration(5));
-document.getElementById("gen6").addEventListener("click", () => toggleGeneration(6));
-document.getElementById("gen7").addEventListener("click", () => toggleGeneration(7));
-document.getElementById("gen8").addEventListener("click", () => toggleGeneration(8));
-document.getElementById("gen9").addEventListener("click", () => toggleGeneration(9));
+// Boutons Gen
+document.getElementById("gen1").addEventListener("click", (event) => toggleGeneration(1, event.target));
+document.getElementById("gen2").addEventListener("click", (event) => toggleGeneration(2, event.target));
+document.getElementById("gen3").addEventListener("click", (event) => toggleGeneration(3, event.target));
+document.getElementById("gen4").addEventListener("click", (event) => toggleGeneration(4, event.target));
+document.getElementById("gen5").addEventListener("click", (event) => toggleGeneration(5, event.target));
+document.getElementById("gen6").addEventListener("click", (event) => toggleGeneration(6, event.target));
+document.getElementById("gen7").addEventListener("click", (event) => toggleGeneration(7, event.target));
+document.getElementById("gen8").addEventListener("click", (event) => toggleGeneration(8, event.target));
+document.getElementById("gen9").addEventListener("click", (event) => toggleGeneration(9, event.target));
 
-// Bouton pour sélectionner toutes les générations
+// Bouton "All"
 document.getElementById("all").addEventListener("click", () => {
-    selectedGenerations = Array.from({ length: 9 }, (_, i) => i + 1); 
+    if (selectedGenerations.length === 9) {
+        selectedGenerations = [];
+        document.getElementById("all").classList.remove("selected");
+    } else {
+        selectedGenerations = Array.from({ length: 9 }, (_, i) => i + 1);
+        document.getElementById("all").classList.add("selected");
+        const buttons = document.querySelectorAll(".btnSelectGen");
+        buttons.forEach(button => {
+            if (button.id !== "all") {
+                button.classList.remove("selected");
+            }
+        });
+    }
+    showPokemon();
 });
 
-// Bouton pour valider la sélection des générations
-document.getElementById("validateSelection").addEventListener("click", () => {
-    if (selectedGenerations.length > 0) {
-        showPokemon();  
-    } else {
-        alert("Veuillez sélectionner au moins une génération !");
+// Ajouter la possibilité de valider la réponse en appuyant sur "Entrée"
+const inputPokemon = document.getElementById("inputPoke");
+
+inputPokemon.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        quizz();  
+        showPokemon();
     }
 });
-
-
-let ValiderPoke = document.getElementById("btnValiderPoke")
-ValiderPoke.addEventListener("click", () => {
-    quizz()
-    showPokemon()
-})
 
 // Fonction pour obtenir une image aléatoire d'un Pokémon en fonction des générations sélectionnées
 async function getRandomPokeImg() {
@@ -52,6 +66,10 @@ async function getRandomPokeImg() {
     let filteredData = data;
     if (selectedGenerations.length > 0) {
         filteredData = data.filter(pokemon => selectedGenerations.includes(pokemon.generation));
+    }
+    if (filteredData.length === 0) {
+        alert("Aucune génération sélectionnée.");
+        return;
     }
 
     // Sélectionner un Pokémon aléatoire parmi ceux filtrés
@@ -68,20 +86,22 @@ async function showPokemon() {
     prop.innerHTML = `<img src="${randomPokeImg}" alt="Image du Pokémon">`;
 }
 
-
-function quizz () { 
-    let message = document.querySelector("#reponse")
-    const inputPokemon = document.getElementById("inputPoke")
+function quizz() { 
+    let message = document.querySelector("#reponse");
+    const inputPokemon = document.getElementById("inputPoke");
     if (inputPokemon.value.toLowerCase() === currentPokemon.name.fr.toLowerCase()) {
-        console.log("C'était bien " + currentPokemon.name.fr)
-        message.innerHTML = `<p>Bravo il s'agissait bien de ${currentPokemon.name.fr} !</p>`
+        message.innerHTML = `<p>Bravo, il s'agissait bien de ${currentPokemon.name.fr} !</p>`;
     } else {
-        console.log("Non c'était " + currentPokemon.name.fr)
-        message.innerHTML = `<p>Non la bonne réponse était ${currentPokemon.name.fr}</p>`
+        message.innerHTML = `<p>Non, la bonne réponse était ${currentPokemon.name.fr}.</p>`;
     }
-    inputPokemon.value = ""
+    inputPokemon.value = ""; 
 }
 
+// Validation manuelle du quizz avec le bouton
+let ValiderPoke = document.getElementById("btnValiderPoke");
+ValiderPoke.addEventListener("click", () => {
+    quizz();
+    showPokemon(); 
+});
 
-
-showPokemon()
+showPokemon();
