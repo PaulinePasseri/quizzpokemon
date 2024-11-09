@@ -1,22 +1,32 @@
-let currentPokemon = null
-let selectedGenerations = []
-let counter = 0
-let points = 0
+let currentPokemon = null;
+let selectedGenerations = [];
+let counter = 0;
+let points = 0;
+let data = null;
+let availablePokemon = [];
+
+function filterAvailablePokemon() {
+    if (selectedGenerations.length > 0) {
+        availablePokemon = data.filter(pokemon => selectedGenerations.includes(pokemon.generation));
+    } else {
+        availablePokemon = [...data];
+    }
+}
 
 // Fonction pour gérer la sélection de génération
 function toggleGeneration(generation, buttonElement) {
     const index = selectedGenerations.indexOf(generation);
     if (index === -1) {
-        selectedGenerations.push(generation); 
-        buttonElement.classList.add("selected"); 
+        selectedGenerations.push(generation);
+        buttonElement.classList.add("selected");
     } else {
-        selectedGenerations.splice(index, 1); 
-        buttonElement.classList.remove("selected"); 
+        selectedGenerations.splice(index, 1);
+        buttonElement.classList.remove("selected");
     }
-    // Désélectionner le bouton "All" si des boutons individuels sont sélectionnés
     if (selectedGenerations.length > 0) {
         document.getElementById("all").classList.remove("selected");
     }
+    filterAvailablePokemon();
     showPokemon();
 }
 
@@ -46,6 +56,7 @@ document.getElementById("all").addEventListener("click", () => {
             }
         });
     }
+    filterAvailablePokemon();
     showPokemon();
 });
 
@@ -61,31 +72,37 @@ inputPokemon.addEventListener("keydown", (event) => {
 
 // Fonction pour obtenir une image aléatoire d'un Pokémon en fonction des générations sélectionnées
 async function getRandomPokeImg() {
-    const response = await fetch("https://tyradex.vercel.app/api/v1/pokemon");
-    const data = await response.json();
-
-    // Filtrer les Pokémon en fonction des générations sélectionnées
-    let filteredData = data;
-    if (selectedGenerations.length > 0) {
-        filteredData = data.filter(pokemon => selectedGenerations.includes(pokemon.generation));
-    }
-    if (filteredData.length === 0) {
-        alert("Aucune génération sélectionnée.");
-        return;
+    if (!data) {
+        const response = await fetch("https://tyradex.vercel.app/api/v1/pokemon");
+        data = await response.json();
+        filterAvailablePokemon();
     }
 
-    // Sélectionner un Pokémon aléatoire parmi ceux filtrés
-    const randomIndex = Math.floor(Math.random() * filteredData.length);
-    currentPokemon = filteredData[randomIndex];
-    let randomPokeImg = currentPokemon.sprites.regular;
-    return randomPokeImg;
+    if (availablePokemon.length === 0) {
+        if (selectedGenerations.length === 0) {
+            alert("Aucune génération sélectionnée.");
+            return null;
+        }
+        alert("Tous les Pokémon de cette sélection ont été vus. Réinitialisation de la liste.");
+        filterAvailablePokemon();
+    }
+
+    const randomIndex = Math.floor(Math.random() * availablePokemon.length);
+    currentPokemon = availablePokemon[randomIndex];
+    availablePokemon.splice(randomIndex, 1);
+    
+    return currentPokemon.sprites.regular;
 }
 
 // Afficher l'image du Pokémon sélectionné
 async function showPokemon() {
     const prop = document.getElementById("proposition");
     const randomPokeImg = await getRandomPokeImg();
-    prop.innerHTML = `<img src="${randomPokeImg}" alt="Image du Pokémon">`;
+    if (randomPokeImg) {
+        prop.innerHTML = `<img src="${randomPokeImg}" alt="Image du Pokémon">`;
+    } else {
+        prop.innerHTML = `<p>Aucun Pokémon disponible. Veuillez sélectionner une génération.</p>`;
+    }
 }
 
 function removeAccents(str) {
@@ -126,9 +143,10 @@ ValiderPoke.addEventListener("click", () => {
 });
 
 function resetPoints() {
-    counter = 0
-    points = 0 
-    updateScore(); 
+    counter = 0;
+    points = 0;
+    updateScore();
+    filterAvailablePokemon();
 }
 
 document.getElementById("resetButton").addEventListener("click", () => {
