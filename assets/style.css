@@ -47,6 +47,18 @@ button {
     transition: 200ms;
 }
 
+.btnReset {
+    border-radius: 20px;
+    padding: 5px 10px;
+    min-width: 30px;
+    min-height: 30px;
+}
+
+.btnReset:hover {
+    background-color: rgb(233, 233, 233);
+    transition: 200ms;
+}
+
 .selected {
     background-color: rgb(211, 65, 89);
 }

@@ -125,4 +125,15 @@ ValiderPoke.addEventListener("click", () => {
     showPokemon(); 
 });
 
+function resetPoints() {
+    counter = 0
+    points = 0 
+    updateScore(); 
+}
+
+document.getElementById("resetButton").addEventListener("click", () => {
+    resetPoints();  
+    showPokemon();  
+});
+
 showPokemon();
