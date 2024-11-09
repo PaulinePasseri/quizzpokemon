@@ -1,5 +1,7 @@
 let currentPokemon = null
 let selectedGenerations = []
+let counter = 0
+let points = 0
 
 // Fonction pour gérer la sélection de génération
 function toggleGeneration(generation, buttonElement) {
@@ -91,10 +93,20 @@ function quizz() {
     const inputPokemon = document.getElementById("inputPoke");
     if (inputPokemon.value.toLowerCase() === currentPokemon.name.fr.toLowerCase()) {
         message.innerHTML = `<p>Bravo, il s'agissait bien de ${currentPokemon.name.fr} !</p>`;
+        counter++
+        points++
     } else {
         message.innerHTML = `<p>Non, la bonne réponse était ${currentPokemon.name.fr}.</p>`;
+        counter++
     }
     inputPokemon.value = ""; 
+    updateScore();
+}
+
+// Fonction pour afficher le score sous forme "points/counter"
+function updateScore() {
+    const scoreElement = document.getElementById("score");
+    scoreElement.innerHTML = `${points}/${counter}`;  
 }
 
 // Validation manuelle du quizz avec le bouton
