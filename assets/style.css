@@ -39,6 +39,7 @@ button {
     min-width: 30px;
     min-height: 30px;
     margin-right: 10px;
+    margin-bottom: 5px;
 }
 
 .btnSelectGen:hover {
@@ -60,12 +61,9 @@ button {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center; 
     position: relative;
-}
-
-#question {
-    position: absolute;
-    top: 650px;
+    width: 100%;
 }
 
 #inputPoke {
@@ -75,23 +73,23 @@ button {
     border-radius: 25px;
     font-size: 18px;
     text-align: left;
-    width: 250px;
+    width: 100%;
+    max-width: 250px;
     box-sizing: border-box;
-    
 }
 
 #btnValiderPoke {
-    position: absolute;
-    right: 20px;
     padding: 13px 20px;
     border: 1px solid black;
-    border-radius: 0 25px 25px 0;
+    border-radius: 25px;
     font-size: 14px;
     font-weight: 600;
     background-color: black;
     color: white;
     cursor: pointer;
     transition: 300ms;
+    width: auto; 
+    margin-left: 10px; 
 }
 
 #btnValiderPoke:hover {
@@ -100,4 +98,46 @@ button {
 
 #proposition img {
     height: 400px;
+}
+
+@media (max-width: 480px) {
+    .quizz {
+        margin: 10px;
+    }
+
+    .quizz h1 {
+        font-size: 20px;
+    }
+
+    h2 {
+        font-size: 15px;
+    }
+
+    .btnSelectGen {
+        font-size: 10px;
+    }
+
+    #proposition img {
+        height: 200px;
+    }
+
+    .question__title {
+        font-size: 15px;
+    }
+
+    .inputArea {
+        margin: 20px 0;
+        flex-direction: column; 
+        align-items: stretch; 
+    }
+
+    #inputPoke {
+        width: 100%;
+        margin-bottom: 10px; 
+    }
+
+    #btnValiderPoke {
+        width: 100%; 
+        margin-left: 0; 
+    }
 }
