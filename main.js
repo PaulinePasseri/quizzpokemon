@@ -47,8 +47,8 @@ function toggleGeneration(generation, buttonElement) {
 const generationButtons = document.querySelectorAll(".btnSelectGen"); // Sélectionner tous les boutons de génération
 
 generationButtons.forEach(button => {
-    button.addEventListener("click", (event) => toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target));
-    button.addEventListener("touchend", (event) => toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target));
+    // Utiliser l'événement pointerdown pour gérer le clic ou le toucher
+    button.addEventListener("pointerdown", (event) => toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target));
 });
 
 
