@@ -120,6 +120,10 @@ async function showPokemon() {
     }
 }
 
+function removeGenderSymbols(pokemonName) {
+    return pokemonName.replace(/[♂♀]/g, '');
+}
+
 function removeAccents(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -130,8 +134,8 @@ function quizz() {
     let message = document.querySelector("#reponse");
     const inputPokemon = document.getElementById("inputPoke");
 
-    const userAnswer = removeAccents(inputPokemon.value.toLowerCase());
-    const correctAnswer = removeAccents(currentPokemon.name.fr.toLowerCase());
+    const userAnswer = removeAccents(removeGenderSymbols(inputPokemon.value.toLowerCase()));
+    const correctAnswer = removeAccents(removeGenderSymbols(currentPokemon.name.fr.toLowerCase()));
     let isCorrect = userAnswer === correctAnswer;
     if (isCorrect) {
         points++;
