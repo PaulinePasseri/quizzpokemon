@@ -7,9 +7,16 @@ let availablePokemon = [];
 
 function filterAvailablePokemon() {
     if (selectedGenerations.length > 0) {
-        availablePokemon = data.filter(pokemon => selectedGenerations.includes(pokemon.generation));
+        availablePokemon = data.filter(pokemon => 
+            selectedGenerations.includes(pokemon.generation) && 
+            pokemon.pokedex_id !== 0 && 
+            pokemon.name.fr !== "MissingNo."
+        );
     } else {
-        availablePokemon = [...data];
+        availablePokemon = data.filter(pokemon => 
+            pokemon.pokedex_id !== 0 && 
+            pokemon.name.fr !== "MissingNo."
+        );
     }
 }
 
