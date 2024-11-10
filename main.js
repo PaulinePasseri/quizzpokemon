@@ -5,7 +5,6 @@ let points = 0;
 let data = null;
 let availablePokemon = [];
 
-
 function filterAvailablePokemon() {
     if (selectedGenerations.length > 0) {
         availablePokemon = data.filter(pokemon => 
@@ -23,10 +22,6 @@ function filterAvailablePokemon() {
 
 // Choix d'une ou plusieurs générations
 function toggleGeneration(generation, buttonElement) {
-    points = 0;
-    counter = 0;
-    updateScore(); 
-
     const index = selectedGenerations.indexOf(generation);
     
     if (index === -1) {
@@ -37,43 +32,66 @@ function toggleGeneration(generation, buttonElement) {
         buttonElement.classList.remove("selected");
     }
 
-    if (selectedGenerations.length > 0) {
-        document.getElementById("all").classList.remove("selected");
+    const allButton = document.getElementById("all");
+    if (selectedGenerations.length === 9) {
+        allButton.classList.add("selected");
+    } else {
+        allButton.classList.remove("selected");
     }
+
+    points = 0;
+    counter = 0;
+    updateScore();
     availablePokemon = [];
     filterAvailablePokemon(); 
     showPokemon(); 
 }
 
-// Event listeners sur les filtres
-document.getElementById("gen1").addEventListener("click", (event) => toggleGeneration(1, event.target));
-document.getElementById("gen2").addEventListener("click", (event) => toggleGeneration(2, event.target));
-document.getElementById("gen3").addEventListener("click", (event) => toggleGeneration(3, event.target));
-document.getElementById("gen4").addEventListener("click", (event) => toggleGeneration(4, event.target));
-document.getElementById("gen5").addEventListener("click", (event) => toggleGeneration(5, event.target));
-document.getElementById("gen6").addEventListener("click", (event) => toggleGeneration(6, event.target));
-document.getElementById("gen7").addEventListener("click", (event) => toggleGeneration(7, event.target));
-document.getElementById("gen8").addEventListener("click", (event) => toggleGeneration(8, event.target));
-document.getElementById("gen9").addEventListener("click", (event) => toggleGeneration(9, event.target));
+// Écouteurs d'événements pour les clics et les touchés
+const generationButtons = document.querySelectorAll(".btnSelectGen");
 
-document.getElementById("all").addEventListener("pointerdown", (event) => {
-    event.stopPropagation(); 
+generationButtons.forEach(button => {
+    const handleEvent = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        if (button.id === "all") {
+            handleAllGenerations(event);
+        } else {
+            toggleGeneration(parseInt(button.id.replace('gen', '')), button);
+        }
+    };
+
+    button.addEventListener("pointerdown", handleEvent);
+    button.addEventListener("touchstart", handleEvent);
+});
+
+// Fonction pour gérer le bouton "Toutes"
+function handleAllGenerations(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const allButton = document.getElementById("all");
+    const genButtons = document.querySelectorAll(".btnSelectGen:not(#all)");
+
     if (selectedGenerations.length === 9) {
+        // Désélectionner toutes les générations
         selectedGenerations = [];
-        document.getElementById("all").classList.remove("selected");
+        allButton.classList.remove("selected");
+        genButtons.forEach(button => button.classList.remove("selected"));
     } else {
+        // Sélectionner toutes les générations
         selectedGenerations = Array.from({ length: 9 }, (_, i) => i + 1);
-        document.getElementById("all").classList.add("selected");
-        const buttons = document.querySelectorAll(".btnSelectGen");
-        buttons.forEach(button => {
-            if (button.id !== "all") {
-                button.classList.remove("selected");
-            }
-        });
+        allButton.classList.add("selected");
+        genButtons.forEach(button => button.classList.add("selected"));
     }
+
+    points = 0;
+    counter = 0;
+    updateScore();
     filterAvailablePokemon();
     showPokemon();
-});
+}
 
 // Sélectionne une image de Pokémon aléatoirement 
 async function getRandomPokeImg() {
@@ -103,6 +121,7 @@ async function getRandomPokeImg() {
 async function showPokemon() {
     const prop = document.getElementById("proposition");
     const randomPokeImg = await getRandomPokeImg();
+    
     if (randomPokeImg) {
         prop.innerHTML = `<img src="${randomPokeImg}" alt="Image du Pokémon">`;
     } else {
@@ -114,6 +133,7 @@ async function showPokemon() {
 function removeGenderSymbols(pokemonName) {
     return pokemonName.replace(/[♂♀]/g, '');
 }
+
 function removeAccents(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
@@ -126,12 +146,15 @@ function quizz() {
 
     const userAnswer = removeAccents(removeGenderSymbols(inputPokemon.value.toLowerCase()));
     const correctAnswer = removeAccents(removeGenderSymbols(currentPokemon.name.fr.toLowerCase()));
+    
     let isCorrect = userAnswer === correctAnswer;
+    
     if (isCorrect) {
         points++;
     }
+    
     counter++;
-
+    
     updateScore();
 
     if (isCorrect) {
@@ -145,28 +168,30 @@ function quizz() {
     if (availablePokemon.length === 0) {
         message.innerHTML += `<p>Bravo vous avez vu tous les Pokémon des générations sélectionnées ! Votre score final est de ${points}/${counter} !</p>
                               <p>Appuyez sur Rejouer pour recommencer.</p>`;
+                              
         document.getElementById("btnValiderPoke").disabled = true;
         document.getElementById("inputPoke").disabled = true;
+        
     } else {
         showPokemon(); 
     }
 }
 
-
 function updateScore() {
     const scoreElement = document.getElementById("scoreDisplay"); 
-    if (scoreElement) {
-        scoreElement.innerHTML = `${points}/${counter}`;
-    }
+   
+   if (scoreElement) {
+       scoreElement.innerHTML = `${points}/${counter}`;
+   }
 }
 
 // Validation par Entrée
 const inputPokemon = document.getElementById("inputPoke");
 
 inputPokemon.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        quizz();
-    }
+   if (event.key === "Enter") {
+       quizz();
+   }
 });
 
 // Validation manuelle
@@ -174,16 +199,17 @@ let ValiderPoke = document.getElementById("btnValiderPoke");
 ValiderPoke.addEventListener("click", quizz);
 
 function resetQuizz() {
-    counter = 0;
-    points = 0;
-    updateScore();
-    filterAvailablePokemon();
-    document.querySelector("#reponse").innerHTML = "";
-    document.getElementById("btnValiderPoke").disabled = false;
-    document.getElementById("inputPoke").disabled = false;
-    showPokemon();
+   counter = 0;
+   points = 0;
+   updateScore();
+   filterAvailablePokemon();
+   document.querySelector("#reponse").innerHTML = "";
+   document.getElementById("btnValiderPoke").disabled = false;
+   document.getElementById("inputPoke").disabled = false;
+   showPokemon();
 }
 
 document.getElementById("resetButton").addEventListener("click", resetQuizz);
 
+// Afficher un Pokémon au démarrage
 showPokemon();
