@@ -49,45 +49,42 @@ function toggleGeneration(generation, buttonElement) {
 const generationButtons = document.querySelectorAll(".btnSelectGen"); // Sélectionner tous les boutons de génération
 
 generationButtons.forEach(button => {
-    const handleEvent = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        
-        // Ajoutez un petit délai pour éviter les doubles déclenchements
-        setTimeout(() => {
-            toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target);
-        }, 10);
-    };
-
-    button.addEventListener("pointerdown", handleEvent);
-    button.addEventListener("touchstart", handleEvent);
+    // Utiliser l'événement pointerdown pour gérer le clic ou le toucher
+    button.addEventListener("pointerdown", (event) => {
+        event.stopPropagation(); // Empêcher la propagation à d'autres éléments
+        toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target);
+    });
 });
 
-function handleAllGenerations(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    setTimeout(() => {
-        if (selectedGenerations.length === 9) {
-            selectedGenerations = [];
-            document.getElementById("all").classList.remove("selected");
-        } else {
-            selectedGenerations = Array.from({ length: 9 }, (_, i) => i + 1);
-            document.getElementById("all").classList.add("selected");
-            const buttons = document.querySelectorAll(".btnSelectGen");
-            buttons.forEach(button => {
-                if (button.id !== "all") {
-                    button.classList.remove("selected");
-                }
-            });
-        }
-        filterAvailablePokemon();
-        showPokemon();
-    }, 10);
-}
+// Event listeners sur les filtres
+document.getElementById("gen1").addEventListener("click", (event) => toggleGeneration(1, event.target));
+document.getElementById("gen2").addEventListener("click", (event) => toggleGeneration(2, event.target));
+document.getElementById("gen3").addEventListener("click", (event) => toggleGeneration(3, event.target));
+document.getElementById("gen4").addEventListener("click", (event) => toggleGeneration(4, event.target));
+document.getElementById("gen5").addEventListener("click", (event) => toggleGeneration(5, event.target));
+document.getElementById("gen6").addEventListener("click", (event) => toggleGeneration(6, event.target));
+document.getElementById("gen7").addEventListener("click", (event) => toggleGeneration(7, event.target));
+document.getElementById("gen8").addEventListener("click", (event) => toggleGeneration(8, event.target));
+document.getElementById("gen9").addEventListener("click", (event) => toggleGeneration(9, event.target));
 
-document.getElementById("all").addEventListener("pointerdown", handleAllGenerations);
-document.getElementById("all").addEventListener("touchstart", handleAllGenerations);
+document.getElementById("all").addEventListener("pointerdown", (event) => {
+    event.stopPropagation(); 
+    if (selectedGenerations.length === 9) {
+        selectedGenerations = [];
+        document.getElementById("all").classList.remove("selected");
+    } else {
+        selectedGenerations = Array.from({ length: 9 }, (_, i) => i + 1);
+        document.getElementById("all").classList.add("selected");
+        const buttons = document.querySelectorAll(".btnSelectGen");
+        buttons.forEach(button => {
+            if (button.id !== "all") {
+                button.classList.remove("selected");
+            }
+        });
+    }
+    filterAvailablePokemon();
+    showPokemon();
+});
 
 // Sélectionne une image de Pokémon aléatoirement 
 async function getRandomPokeImg() {
