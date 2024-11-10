@@ -45,17 +45,6 @@ function toggleGeneration(generation, buttonElement) {
     showPokemon(); 
 }
 
-// Écouteurs d'événements pour les clics et les touchés
-const generationButtons = document.querySelectorAll(".btnSelectGen"); // Sélectionner tous les boutons de génération
-
-generationButtons.forEach(button => {
-    // Utiliser l'événement pointerdown pour gérer le clic ou le toucher
-    button.addEventListener("pointerdown", (event) => {
-        event.stopPropagation(); // Empêcher la propagation à d'autres éléments
-        toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target);
-    });
-});
-
 // Event listeners sur les filtres
 document.getElementById("gen1").addEventListener("click", (event) => toggleGeneration(1, event.target));
 document.getElementById("gen2").addEventListener("click", (event) => toggleGeneration(2, event.target));
