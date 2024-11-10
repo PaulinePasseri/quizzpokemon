@@ -48,7 +48,10 @@ const generationButtons = document.querySelectorAll(".btnSelectGen"); // Sélect
 
 generationButtons.forEach(button => {
     // Utiliser l'événement pointerdown pour gérer le clic ou le toucher
-    button.addEventListener("pointerdown", (event) => toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target));
+    button.addEventListener("pointerdown", (event) => {
+        event.stopPropagation(); // Empêcher la propagation à d'autres éléments
+        toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target);
+    });
 });
 
 
@@ -62,7 +65,8 @@ document.getElementById("gen7").addEventListener("click", (event) => toggleGener
 document.getElementById("gen8").addEventListener("click", (event) => toggleGeneration(8, event.target));
 document.getElementById("gen9").addEventListener("click", (event) => toggleGeneration(9, event.target));
 
-document.getElementById("all").addEventListener("click", () => {
+document.getElementById("all").addEventListener("pointerdown", (event) => {
+    event.stopPropagation(); 
     if (selectedGenerations.length === 9) {
         selectedGenerations = [];
         document.getElementById("all").classList.remove("selected");
