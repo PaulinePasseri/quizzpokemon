@@ -126,9 +126,10 @@ button {
     }
 
     .btnSelectGen {
-        font-size: 10px;
+        font-size: 15px;
         min-width: 44px;
         min-height: 44px;
+        border-radius: 40px;
     }
 
     #proposition img {

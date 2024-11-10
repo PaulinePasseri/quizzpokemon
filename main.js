@@ -5,6 +5,7 @@ let points = 0;
 let data = null;
 let availablePokemon = [];
 
+// Filtrer les Pokémon disponibles en fonction des générations sélectionnées
 function filterAvailablePokemon() {
     if (selectedGenerations.length > 0) {
         availablePokemon = data.filter(pokemon => 
@@ -42,35 +43,12 @@ function toggleGeneration(generation, buttonElement) {
     points = 0;
     counter = 0;
     updateScore();
-    availablePokemon = [];
     filterAvailablePokemon(); 
     showPokemon(); 
 }
 
-// Écouteurs d'événements pour les clics et les touchés
-const generationButtons = document.querySelectorAll(".btnSelectGen");
-
-generationButtons.forEach(button => {
-    const handleEvent = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        
-        if (button.id === "all") {
-            handleAllGenerations(event);
-        } else {
-            toggleGeneration(parseInt(button.id.replace('gen', '')), button);
-        }
-    };
-
-    button.addEventListener("pointerdown", handleEvent);
-    button.addEventListener("touchstart", handleEvent);
-});
-
-// Fonction pour gérer le bouton "Toutes"
-function handleAllGenerations(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    
+// Gérer le bouton "Toutes"
+function handleAllGenerations() {
     const allButton = document.getElementById("all");
     const genButtons = document.querySelectorAll(".btnSelectGen:not(#all)");
 
@@ -92,6 +70,22 @@ function handleAllGenerations(event) {
     filterAvailablePokemon();
     showPokemon();
 }
+
+// Écouteurs d'événements pour les clics et les touchés
+const generationButtons = document.querySelectorAll(".btnSelectGen"); // Sélectionner tous les boutons de génération
+
+generationButtons.forEach(button => {
+    ["click", "touchstart"].forEach(eventType => {
+        button.addEventListener(eventType, (event) => {
+            event.preventDefault(); // Empêcher le comportement par défaut
+            if (button.id === "all") {
+                handleAllGenerations(); // Gérer le bouton "Toutes"
+            } else {
+                toggleGeneration(parseInt(button.id.replace('gen', '')), button); // Gérer la sélection d'une génération
+            }
+        }, { passive: false }); // Permettre preventDefault
+    });
+});
 
 // Sélectionne une image de Pokémon aléatoirement 
 async function getRandomPokeImg() {
@@ -178,8 +172,7 @@ function quizz() {
 }
 
 function updateScore() {
-    const scoreElement = document.getElementById("scoreDisplay"); 
-   
+   const scoreElement = document.getElementById("scoreDisplay"); 
    if (scoreElement) {
        scoreElement.innerHTML = `${points}/${counter}`;
    }
