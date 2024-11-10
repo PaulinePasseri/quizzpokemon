@@ -119,10 +119,10 @@ function quizz() {
     const correctAnswer = removeAccents(currentPokemon.name.fr.toLowerCase());
 
     if (userAnswer === correctAnswer) {
-        message.innerHTML = `<p>Bravo, il s'agissait bien de ${currentPokemon.name.fr} !</p>`;
+        message.innerHTML = `<p><strong>Correct</strong>, la bonne réponse est ${currentPokemon.name.fr} !</p>`;
         points++;
     } else {
-        message.innerHTML = `<p>Non, la bonne réponse était ${currentPokemon.name.fr}.</p>`;
+        message.innerHTML = `<p><strong>Faux</strong>, la bonne réponse est ${currentPokemon.name.fr}.</p>`;
     }
     counter++;
     inputPokemon.value = "";
