@@ -21,34 +21,35 @@ function filterAvailablePokemon() {
 }
 
 function toggleGeneration(generation, buttonElement) {
-    // Réinitialiser le score et le compteur
     points = 0;
     counter = 0;
-    updateScore(); // Si vous avez un affichage du score
+    updateScore(); 
 
-    // Vérifier si la génération est déjà sélectionnée
     const index = selectedGenerations.indexOf(generation);
     
     if (index === -1) {
-        // La génération n'est pas encore sélectionnée, on l'ajoute à la liste
         selectedGenerations.push(generation);
-        buttonElement.classList.add("selected"); // Sélectionner le bouton
+        buttonElement.classList.add("selected");
     } else {
-        // La génération est déjà sélectionnée, on la retire de la liste
         selectedGenerations.splice(index, 1);
-        buttonElement.classList.remove("selected"); // Désélectionner le bouton
+        buttonElement.classList.remove("selected");
     }
 
-    // Si aucune génération n'est sélectionnée, réinitialiser "all"
     if (selectedGenerations.length > 0) {
         document.getElementById("all").classList.remove("selected");
     }
-
-    // Réinitialisation de la liste des Pokémon disponibles
     availablePokemon = [];
-    filterAvailablePokemon(); // Filtrer les Pokémon disponibles en fonction des générations sélectionnées
-    showPokemon(); // Afficher un Pokémon de la nouvelle sélection
+    filterAvailablePokemon(); 
+    showPokemon(); 
 }
+
+// Écouteurs d'événements pour les clics et les touchés
+const generationButtons = document.querySelectorAll(".btnSelectGen"); // Sélectionner tous les boutons de génération
+
+generationButtons.forEach(button => {
+    button.addEventListener("click", (event) => toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target));
+    button.addEventListener("touchend", (event) => toggleGeneration(parseInt(event.target.id.replace('gen', '')), event.target));
+});
 
 
 document.getElementById("gen1").addEventListener("click", (event) => toggleGeneration(1, event.target));
