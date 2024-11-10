@@ -23,6 +23,10 @@ function filterAvailablePokemon() {
 
 // Choix d'une ou plusieurs générations
 function toggleGeneration(generation, buttonElement) {
+    points = 0;
+    counter = 0;
+    updateScore(); 
+
     const index = selectedGenerations.indexOf(generation);
     
     if (index === -1) {
@@ -40,9 +44,7 @@ function toggleGeneration(generation, buttonElement) {
         allButton.classList.remove("selected");
     }
 
-    points = 0;
-    counter = 0;
-    updateScore();
+    availablePokemon = [];
     filterAvailablePokemon(); 
     showPokemon(); 
 }
@@ -75,15 +77,13 @@ function handleAllGenerations() {
 const generationButtons = document.querySelectorAll(".btnSelectGen"); // Sélectionner tous les boutons de génération
 
 generationButtons.forEach(button => {
-    ["click", "touchstart"].forEach(eventType => {
-        button.addEventListener(eventType, (event) => {
-            event.preventDefault(); // Empêcher le comportement par défaut
-            if (button.id === "all") {
-                handleAllGenerations(); // Gérer le bouton "Toutes"
-            } else {
-                toggleGeneration(parseInt(button.id.replace('gen', '')), button); // Gérer la sélection d'une génération
-            }
-        }, { passive: false }); // Permettre preventDefault
+    button.addEventListener("pointerdown", (event) => {
+        event.stopPropagation(); // Empêcher la propagation à d'autres éléments
+        if (button.id === "all") {
+            handleAllGenerations(); // Gérer le bouton "Toutes"
+        } else {
+            toggleGeneration(parseInt(button.id.replace('gen', '')), button); // Gérer la sélection d'une génération
+        }
     });
 });
 
