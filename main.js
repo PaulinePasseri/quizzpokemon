@@ -13,7 +13,6 @@ function filterAvailablePokemon() {
     }
 }
 
-// Fonction pour gérer la sélection de génération
 function toggleGeneration(generation, buttonElement) {
     const index = selectedGenerations.indexOf(generation);
     if (index === -1) {
@@ -30,7 +29,6 @@ function toggleGeneration(generation, buttonElement) {
     showPokemon();
 }
 
-// Boutons Gen
 document.getElementById("gen1").addEventListener("click", (event) => toggleGeneration(1, event.target));
 document.getElementById("gen2").addEventListener("click", (event) => toggleGeneration(2, event.target));
 document.getElementById("gen3").addEventListener("click", (event) => toggleGeneration(3, event.target));
@@ -41,7 +39,6 @@ document.getElementById("gen7").addEventListener("click", (event) => toggleGener
 document.getElementById("gen8").addEventListener("click", (event) => toggleGeneration(8, event.target));
 document.getElementById("gen9").addEventListener("click", (event) => toggleGeneration(9, event.target));
 
-// Bouton "All"
 document.getElementById("all").addEventListener("click", () => {
     if (selectedGenerations.length === 9) {
         selectedGenerations = [];
@@ -60,17 +57,14 @@ document.getElementById("all").addEventListener("click", () => {
     showPokemon();
 });
 
-// Ajouter la possibilité de valider la réponse en appuyant sur "Entrée"
 const inputPokemon = document.getElementById("inputPoke");
 
 inputPokemon.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
-        quizz();  
-        showPokemon();
+        quizz();
     }
 });
 
-// Fonction pour obtenir une image aléatoire d'un Pokémon en fonction des générations sélectionnées
 async function getRandomPokeImg() {
     if (!data) {
         const response = await fetch("https://tyradex.vercel.app/api/v1/pokemon");
@@ -83,8 +77,8 @@ async function getRandomPokeImg() {
             alert("Aucune génération sélectionnée.");
             return null;
         }
-        alert("Tous les Pokémon de cette sélection ont été vus. Réinitialisation de la liste.");
-        filterAvailablePokemon();
+        resetQuizz();
+        return getRandomPokeImg();
     }
 
     const randomIndex = Math.floor(Math.random() * availablePokemon.length);
@@ -94,7 +88,6 @@ async function getRandomPokeImg() {
     return currentPokemon.sprites.regular;
 }
 
-// Afficher l'image du Pokémon sélectionné
 async function showPokemon() {
     const prop = document.getElementById("proposition");
     const randomPokeImg = await getRandomPokeImg();
@@ -110,48 +103,53 @@ function removeAccents(str) {
 }
 
 function quizz() {
+    if (!currentPokemon) return;
+
     let message = document.querySelector("#reponse");
     const inputPokemon = document.getElementById("inputPoke");
 
-    // Normaliser les deux chaînes (input et nom du Pokémon) en supprimant les accents et en mettant tout en minuscule
     const userAnswer = removeAccents(inputPokemon.value.toLowerCase());
     const correctAnswer = removeAccents(currentPokemon.name.fr.toLowerCase());
 
     if (userAnswer === correctAnswer) {
         message.innerHTML = `<p>Bravo, il s'agissait bien de ${currentPokemon.name.fr} !</p>`;
-        counter++;
         points++;
     } else {
         message.innerHTML = `<p>Non, la bonne réponse était ${currentPokemon.name.fr}.</p>`;
-        counter++;
     }
+    counter++;
     inputPokemon.value = "";
     updateScore();
+
+    if (availablePokemon.length === 0) {
+        message.innerHTML += `<p>Vous avez vu tous les Pokémon des générations sélectionnées, votre score final est de ${points}/${counter}</p>
+                              <p>Appuyez sur Rejouer pour recommencer.</p>`;
+        document.getElementById("btnValiderPoke").disabled = true;
+        document.getElementById("inputPoke").disabled = true;
+    } else {
+        showPokemon();
+    }
 }
 
-// Fonction pour afficher le score sous forme "points/counter"
 function updateScore() {
     const scoreElement = document.getElementById("score");
     scoreElement.innerHTML = `${points}/${counter}`;  
 }
 
-// Validation manuelle du quizz avec le bouton
 let ValiderPoke = document.getElementById("btnValiderPoke");
-ValiderPoke.addEventListener("click", () => {
-    quizz();
-    showPokemon(); 
-});
+ValiderPoke.addEventListener("click", quizz);
 
-function resetPoints() {
+function resetQuizz() {
     counter = 0;
     points = 0;
     updateScore();
     filterAvailablePokemon();
+    document.querySelector("#reponse").innerHTML = "";
+    document.getElementById("btnValiderPoke").disabled = false;
+    document.getElementById("inputPoke").disabled = false;
+    showPokemon();
 }
 
-document.getElementById("resetButton").addEventListener("click", () => {
-    resetPoints();  
-    showPokemon();  
-});
+document.getElementById("resetButton").addEventListener("click", resetQuizz);
 
 showPokemon();
