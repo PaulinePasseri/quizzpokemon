@@ -21,6 +21,10 @@ function filterAvailablePokemon() {
 }
 
 function toggleGeneration(generation, buttonElement) {
+    points = 0;
+    counter = 0;
+    updateScore();
+    document.querySelector("#reponse").innerHTML = "";
     const index = selectedGenerations.indexOf(generation);
     if (index === -1) {
         selectedGenerations.push(generation);
