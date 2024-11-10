@@ -21,24 +21,35 @@ function filterAvailablePokemon() {
 }
 
 function toggleGeneration(generation, buttonElement) {
+    // Réinitialiser le score et le compteur
     points = 0;
     counter = 0;
-    updateScore();
-    document.querySelector("#reponse").innerHTML = "";
+    updateScore(); // Si vous avez un affichage du score
+
+    // Vérifier si la génération est déjà sélectionnée
     const index = selectedGenerations.indexOf(generation);
+    
     if (index === -1) {
+        // La génération n'est pas encore sélectionnée, on l'ajoute à la liste
         selectedGenerations.push(generation);
-        buttonElement.classList.add("selected");
+        buttonElement.classList.add("selected"); // Sélectionner le bouton
     } else {
+        // La génération est déjà sélectionnée, on la retire de la liste
         selectedGenerations.splice(index, 1);
-        buttonElement.classList.remove("selected");
+        buttonElement.classList.remove("selected"); // Désélectionner le bouton
     }
+
+    // Si aucune génération n'est sélectionnée, réinitialiser "all"
     if (selectedGenerations.length > 0) {
         document.getElementById("all").classList.remove("selected");
     }
-    filterAvailablePokemon();
-    showPokemon();
+
+    // Réinitialisation de la liste des Pokémon disponibles
+    availablePokemon = [];
+    filterAvailablePokemon(); // Filtrer les Pokémon disponibles en fonction des générations sélectionnées
+    showPokemon(); // Afficher un Pokémon de la nouvelle sélection
 }
+
 
 document.getElementById("gen1").addEventListener("click", (event) => toggleGeneration(1, event.target));
 document.getElementById("gen2").addEventListener("click", (event) => toggleGeneration(2, event.target));
