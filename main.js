@@ -117,30 +117,38 @@ function quizz() {
 
     const userAnswer = removeAccents(inputPokemon.value.toLowerCase());
     const correctAnswer = removeAccents(currentPokemon.name.fr.toLowerCase());
-
-    if (userAnswer === correctAnswer) {
-        message.innerHTML = `<p><strong>Correct</strong>, la bonne réponse est ${currentPokemon.name.fr} !</p>`;
+    let isCorrect = userAnswer === correctAnswer;
+    if (isCorrect) {
         points++;
-    } else {
-        message.innerHTML = `<p><strong>Faux</strong>, la bonne réponse est ${currentPokemon.name.fr}.</p>`;
     }
     counter++;
-    inputPokemon.value = "";
+
     updateScore();
 
+    if (isCorrect) {
+        message.innerHTML = `<p><strong>Correct</strong>, la bonne réponse est ${currentPokemon.name.fr} ! <br>Votre score : ${points}/${counter}</p>`;
+    } else {
+        message.innerHTML = `<p><strong>Faux</strong>, la bonne réponse est ${currentPokemon.name.fr}. <br>Votre score : ${points}/${counter}</p>`;
+    }
+
+    inputPokemon.value = ""; 
+
     if (availablePokemon.length === 0) {
-        message.innerHTML += `<p>Vous avez vu tous les Pokémon des générations sélectionnées, votre score final est de ${points}/${counter}</p>
+        message.innerHTML += `<p>Bravo vous avez vu tous les Pokémon des générations sélectionnées ! Votre score final est de ${points}/${counter} !</p>
                               <p>Appuyez sur Rejouer pour recommencer.</p>`;
         document.getElementById("btnValiderPoke").disabled = true;
         document.getElementById("inputPoke").disabled = true;
     } else {
-        showPokemon();
+        showPokemon(); 
     }
 }
 
+
 function updateScore() {
-    const scoreElement = document.getElementById("score");
-    scoreElement.innerHTML = `${points}/${counter}`;  
+    const scoreElement = document.getElementById("scoreDisplay"); 
+    if (scoreElement) {
+        scoreElement.innerHTML = `${points}/${counter}`;
+    }
 }
 
 let ValiderPoke = document.getElementById("btnValiderPoke");
